@@ -1,0 +1,6 @@
+# Laptop setup. (The UNO Q / App Lab uses python/requirements.txt instead.)
+numpy
+opencv-python
+onnxruntime
+ai-edge-litert
+qai-hub

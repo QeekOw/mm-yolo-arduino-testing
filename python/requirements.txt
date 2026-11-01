@@ -1,0 +1,3 @@
+# numpy and OpenCV are already in the App Lab Python image; do not list them here.
+onnxruntime
+ai-edge-litert

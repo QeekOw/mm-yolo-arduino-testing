@@ -1,0 +1,6 @@
+name: YOLOv8 Pose Test
+icon: 🏃
+description: Runs YOLOv8 pose detection on a test video and streams the result with performance metrics to http://<board-ip>:8000
+
+ports:
+  - 8000
