@@ -266,6 +266,14 @@ def has_display():
 
 
 # --------------------------------------------------------------------- main --
+STOPPED_BY_APP_LAB = []
+
+
+def on_stop(*_):
+    STOPPED_BY_APP_LAB.append(True)
+    raise KeyboardInterrupt
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--model", default=MODEL, help=".onnx, .onnx.zip or .tflite file (default: %(default)s)")
@@ -277,7 +285,7 @@ def main():
     ap.add_argument("--loop", action="store_true", help="replay the video forever (always on in web view)")
     args = ap.parse_args()
     sys.stdout.reconfigure(line_buffering=True)  # show logs live in the App Lab console
-    signal.signal(signal.SIGTERM, signal.default_int_handler)  # App Lab "Stop" -> still print summary
+    signal.signal(signal.SIGTERM, on_stop)  # App Lab "Stop" -> still print the summary
 
     view = args.view if args.view != "auto" else ("window" if has_display() else "web")
     loop = args.loop or view == "web"
@@ -403,3 +411,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    if STOPPED_BY_APP_LAB:
+        sys.exit(143)  # = killed by SIGTERM, so App Lab shows "stopped", not "failed"

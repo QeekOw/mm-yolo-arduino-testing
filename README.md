@@ -268,8 +268,10 @@ MODEL = "models/yolov8n-pose_w8a8.tflite"       # was "models/yolov8n-pose.onnx"
 
 ### 3.3 Run and compare
 
-Press **Run** in App Lab (or `arduino-app-cli app restart user:yolov8-pose-test`) and refresh
-`http://<board-name>.local:8000` on your laptop. The panel now shows the new **Model**, **Size** and
+If the app is still running, **Stop** it first, then press **Run** in App Lab. In the terminal:
+`arduino-app-cli app stop user:yolov8-pose-test` then `arduino-app-cli app start user:yolov8-pose-test`
+(don't use `app restart`: in App CLI 0.14 it stops the app but fails to start it again).
+Then refresh `http://<board-name>.local:8000` on your laptop. The panel now shows the new **Model**, **Size** and
 **Runtime**. Let it run 100+ frames, press **Stop**, and fill in the table. Repeat for each model.
 
 | Model file | Runtime | Precision | Size (MB) | UNO Q FPS | UNO Q inference (ms) | Skeletons look OK? |
