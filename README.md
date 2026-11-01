@@ -232,6 +232,12 @@ It uploads the model, prints a link to the job (open it to watch AI Hub work), w
 result. This takes about 1–3 minutes (w8a8 takes longer). Run it **several times**, changing
 `RUNTIME` / `PRECISION` each time:
 
+> **One run = one file.** Each run only produces the file matching its two choices
+> (`yolov8n-pose_<PRECISION>.<ext>`). Check `models/` for the file you want before you scp it.
+> And use **`convert.py` from this repo only**: the standalone `qai-hub-models` CLI (e.g.
+> `qai_hub_models.models.yolov8_det.export`) exports other, *stock* models that `python/main.py`
+> can't use.
+
 | # | RUNTIME | PRECISION | You get |
 |---|---|---|---|
 | 1 | `tflite` | `float` | `models/yolov8n-pose_float.tflite` |
@@ -246,7 +252,8 @@ result. This takes about 1–3 minutes (w8a8 takes longer). Run it **several tim
 
 ### 3.1 Copy the model to the board
 
-On your **laptop**, in the repo folder:
+On your **laptop**, in the repo folder (scp only works after the matching convert run — `ls models/` first;
+replace `<board-name>` with your board's real name, no brackets):
 
 ```bash
 scp models/yolov8n-pose_w8a8.tflite arduino@<board-name>.local:~/ArduinoApps/yolov8-pose-test/models/
@@ -324,6 +331,7 @@ Results go to `results/` on the laptop.
 | Problem | Fix |
 |---|---|
 | App Lab: app status **failed** | Read App Lab's console or `arduino-app-cli app logs user:yolov8-pose-test`. Usually a wrong `MODEL` path (the file isn't in `models/` on the board). |
+| `scp: stat local "...": No such file or directory` | The local file doesn't exist — `convert.py` only produced what its `RUNTIME`/`PRECISION` choices give, e.g. `float` doesn't produce the w8a8 model. `ls models/`, edit the choices, rerun `uv run python convert.py`, then scp. Also check you're in *this* repo folder. |
 | `Model not found: ...` | Check the name: `ls ~/ArduinoApps/yolov8-pose-test/models/` on the board. |
 | Browser can't open the preview | Use the **board's** address, not `localhost`. Same Wi-Fi? Try the IP instead of `.local`. App running (`arduino-app-cli app ps`)? First run still installing? Wait 1–2 min. |
 | `ssh: Could not resolve hostname ....local` | Use the IP address (`hostname -I` via `adb shell`, or your router's device list). |
