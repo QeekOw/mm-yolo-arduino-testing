@@ -35,6 +35,8 @@ PORT = 8000          # browser preview port (must match app.yaml)
 # ---------------------------------------------------------------------------
 
 ROOT = Path(__file__).resolve().parent.parent
+IN_APP_LAB = Path("/app/app.yaml").exists()  # running on the board inside Arduino App Lab
+DEVICE = f"{'UNO Q ' if IN_APP_LAB else ''}{platform.machine()} x{os.cpu_count()}"
 PANEL_W = 300
 MIN_VIEW_H = 540
 KPT_CONF = 0.5
@@ -258,7 +260,7 @@ class Stream:
 
 
 def has_display():
-    if Path("/app/app.yaml").exists():  # running inside Arduino App Lab
+    if IN_APP_LAB:
         return False
     return sys.platform in ("darwin", "win32") or bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
 
@@ -296,8 +298,11 @@ def main():
     stream = None
     if view == "web":
         stream = Stream(args.port)
-        print(f"Preview : open http://<this-device-ip>:{args.port} in your browser "
-              f"(on this machine: http://localhost:{args.port})")
+        if IN_APP_LAB:
+            print(f"Preview : on your LAPTOP open http://<board-name>.local:{args.port} "
+                  f"or http://<board-ip>:{args.port}  (board IP: run `hostname -I` on the board)")
+        else:
+            print(f"Preview : open http://localhost:{args.port} in your browser")
     print("Press q in the window (or Ctrl+C) to stop.\n")
 
     stats = {"pre": [], "infer": [], "post": [], "total": [], "people": []}
@@ -336,7 +341,7 @@ def main():
                 (f"Size:    {size_mb:.1f} MB", ""),
                 (f"Runtime: {model.runtime}", ""),
                 (f"Input:   {model.size}x{model.size}", ""),
-                (f"Device:  {platform.machine()} x{os.cpu_count()}", ""),
+                (f"Device:  {DEVICE}", ""),
                 ("", "gap"),
                 ("PERFORMANCE", "title"),
                 (f"FPS:         {fps_ema:5.1f}", ""),
