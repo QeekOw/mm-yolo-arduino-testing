@@ -171,7 +171,7 @@ then type `python ...` instead of `uv run python ...` below.
 
 ```bash
 uv run qai-hub configure --api_token <YOUR_API_TOKEN>
-uv run qai-hub list-devices | grep -i arduino      # should show "Arduino VENTUNO Q"
+uv run qai-hub list-devices
 ```
 
 ### 2.3 Write the conversion script
